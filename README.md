@@ -10,4 +10,4 @@ Most of the recordings are uploaded to [2023 Esri Developer Summit in "mediaspac
 
 ## Related sessions
 
-...
+Indoor GIS: QA Your Indoor Positioning System

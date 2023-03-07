@@ -36,7 +36,7 @@ class MainViewModel : ViewModel() {
             portal.load()
                 .onSuccess {
                     val arcGisMap =
-                        ArcGISMap(PortalItem(portal, "3ed5dc18d2cb490b8316aa93bf98fe74"))
+                        ArcGISMap(PortalItem(portal, "a4ab11d9eca94692acff9580ae47a9dc"))
                     arcGisMap.load()
                         .onSuccess {
                             _uiState.update { currentUiState -> currentUiState.copy(map = arcGisMap) }

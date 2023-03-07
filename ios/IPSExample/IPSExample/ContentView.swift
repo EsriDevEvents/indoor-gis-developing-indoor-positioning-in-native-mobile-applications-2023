@@ -94,7 +94,7 @@ struct ContentView: View, AuthenticationChallengeHandler {
                 /// Load ArcGIS portal
                 try await portal.load()
                 
-                let portalItem = PortalItem(portal: portal, id: Item.ID(rawValue: "3ed5dc18d2cb490b8316aa93bf98fe74")!)
+                let portalItem = PortalItem(portal: portal, id: Item.ID(rawValue: "a4ab11d9eca94692acff9580ae47a9dc")!)
                 let map = Map(item: portalItem)
                 /// Load specified map
                 try await map.load()

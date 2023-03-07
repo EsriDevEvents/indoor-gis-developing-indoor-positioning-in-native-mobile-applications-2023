@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">IPSExample</string>
+    <string name="no_permissions">Location permission is not granted</string>
+    <string name="debug_floor">Floor: %d</string>
+    <string name="debug_position_source">Position source: %s</string>
+    <string name="debug_transmitter_count">Transmitter count: %d</string>
+    <string name="debug_network_count">Network count: %d</string>
+    <string name="debug_horizontal_accuracy">Horizontal accuracy: %.2f</string>
+    <string name="settings">Settings</string>
+    <string name="startILDSButton">Start ILDS</string>
+    <string name="stopILDSButton">Stop ILDS</string>
+    <string name="starting_ilds">Starting ILDS…</string>
+    <string name="error_map_loading">Failed to load map.</string>
+    <string name="error_portal_loading">Failed to load portal.</string>
+    <string name="alert_title">Warning</string>
+    <string name="error_cache_levels">Failed to cache levels data.</string>
+    <string name="error_load_ips_tables">Failed to load IPS tables.</string>
+    <string name="error_no_ips_supported">Map does not support IPS.</string>
+    <string name="error_no_ips_positioning">No positioning data available.</string>
+    <string name="error_ips_positioning_id">Failed to obtain positioningId.</string>
+    <string name="error_ilds_failed_to_start">Indoors location data source failed to start.</string>
+    <string name="error_ilds_stopped">ILDS stopped due to an internal error.</string>
+    <string name="error_map_package_loading">Failed to load map package.</string>
+    <string name="title_map_selection">Map Selection</string>
+    <string name="message_map_selection">Do you want to change the map?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+</resources>

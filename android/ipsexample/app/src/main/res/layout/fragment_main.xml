@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.main.MainFragment">
+
+    <com.arcgismaps.mapping.view.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    <Button
+            android:id="@+id/startStopButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="@string/startILDSButton"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/locationDataView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.92"
+            android:visibility="gone"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintHeight_percent="0.15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent=".5">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+            <TextView
+                    android:id="@+id/floor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform" />
+
+            <TextView
+                    android:id="@+id/positionSource"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform" />
+
+            <TextView
+                    android:id="@+id/senderCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform" />
+
+            <TextView
+                    android:id="@+id/horizontalAccuracy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <FrameLayout
+            android:id="@+id/progressBarHolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:background="@color/white_transparent"
+            android:visibility="gone">
+
+        <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/gray1"
+                android:indeterminateTintMode="src_atop" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

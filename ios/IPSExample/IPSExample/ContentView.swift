@@ -115,13 +115,6 @@ struct ContentView: View, AuthenticationChallengeHandler {
                 let locationDisplay = LocationDisplay(dataSource: ilds)
                 let mapView = MapView(map: map).locationDisplay(locationDisplay)
 
-                Task {
-                    /// Subscribe to the streamed status updates
-                    for await s in ilds.$status {
-                        print("--- ILDS status changed to new status '\(s)' ---")
-                    }
-                }
-                
                 /// Start ILDS automatically upon starting the app
                 try await locationDisplay.dataSource.start()
                 /// Update UI
@@ -131,36 +124,18 @@ struct ContentView: View, AuthenticationChallengeHandler {
                 Task {
                     /// Subscribe to the locations stream
                     for await location in ilds.locations {
-                        var info = ""
-                        
-                        /// Parse new location details from additionslSourceProperties
-                        let positionSource = location.additionalSourceProperties[.positionSource] as! String
-                        info += "Source: \(positionSource)"
-                        
-                        info += "\nFloor: "
-                        if let floor = location.additionalSourceProperties[.floor] as? NSNumber {
-                            info += "\(floor.intValue)"
-                        } else {
-                            info += "unknown"
-                        }
-                        
-                        if positionSource == "GNSS", let satteliteCount = location.additionalSourceProperties[.satelliteCount] {
-                            info += "\nSatellites: \(satteliteCount)"
-                        } else if let transmitterCount = location.additionalSourceProperties[Location.SourcePropertyKey(rawValue: "transmitterCount")] {
-                            info += "\nTransmitters: \(transmitterCount)"
-                        }
-                        
-                        let fmt = NumberFormatter()
-                        fmt.numberStyle = .decimal
-                        fmt.maximumSignificantDigits = 5
-                        if location.horizontalAccuracy != 0.0 {
-                            info += "\nHoriz. Accuracy: \(fmt.string(for: location.horizontalAccuracy)!)"
-                        }
-                        
                         /// Show updated location information
-                        self.info = info
+                        self.info = parseDetailedLocationInformation(location)
                     }
                 }
+                
+                Task {
+                    /// Subscribe to the streamed status updates
+                    for await s in ilds.$status {
+                        print("--- ILDS status changed to new status '\(s)' ---")
+                    }
+                }
+                
             } catch let error {
                 mapLoadResult = .failure(error)
                 startStopTitle = "failed"
@@ -172,6 +147,36 @@ struct ContentView: View, AuthenticationChallengeHandler {
         .onDisappear {
             ArcGISEnvironment.authenticationChallengeHandler = nil
         }
+    }
+    
+    private func parseDetailedLocationInformation(_ location: Location) -> String {
+        var info = ""
+        
+        /// Parse new location details from additionslSourceProperties
+        let positionSource = location.additionalSourceProperties[.positionSource] as! String
+        info += "Source: \(positionSource)"
+        
+        info += "\nFloor: "
+        if let floor = location.additionalSourceProperties[.floor] as? NSNumber {
+            info += "\(floor.intValue)"
+        } else {
+            info += "unknown"
+        }
+        
+        if positionSource == "GNSS", let satteliteCount = location.additionalSourceProperties[.satelliteCount] {
+            info += "\nSatellites: \(satteliteCount)"
+        } else if let transmitterCount = location.additionalSourceProperties[Location.SourcePropertyKey(rawValue: "transmitterCount")] {
+            info += "\nTransmitters: \(transmitterCount)"
+        }
+        
+        let fmt = NumberFormatter()
+        fmt.numberStyle = .decimal
+        fmt.maximumSignificantDigits = 5
+        if location.horizontalAccuracy != 0.0 {
+            info += "\nHoriz. Accuracy: \(fmt.string(for: location.horizontalAccuracy)!)"
+        }
+        
+        return info
     }
     
     private enum SetupError: LocalizedError {

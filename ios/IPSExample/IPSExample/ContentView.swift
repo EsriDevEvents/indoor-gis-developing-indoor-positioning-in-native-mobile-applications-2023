@@ -117,6 +117,7 @@ struct ContentView: View, ArcGISAuthenticationChallengeHandler {
 
                 /// Start ILDS automatically upon starting the app
                 try await locationDisplay.dataSource.start()
+                
                 /// Update UI
                 startStopTitle = "stop"
                 mapLoadResult = .success(LoadedMap(mapView: mapView, ilds: ilds))
@@ -131,8 +132,18 @@ struct ContentView: View, ArcGISAuthenticationChallengeHandler {
                 
                 Task {
                     /// Subscribe to the streamed status updates
-                    for await s in ilds.$status {
-                        print("--- ILDS status changed to new status '\(s)' ---")
+                    for await status in ilds.$status {
+                        switch status {
+                        case .starting, .started:
+                            /* React to successful start */
+                            break
+                        case .stopping, .stopped:
+                            /* Handle UI state */
+                            self.info = ""
+                            break
+                        default:
+                            break
+                        }
                     }
                 }
                 

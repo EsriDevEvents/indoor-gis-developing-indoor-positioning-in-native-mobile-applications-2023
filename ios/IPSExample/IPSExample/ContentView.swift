@@ -20,7 +20,7 @@ import SwiftUI
 import ArcGIS
 import CoreLocation
 
-struct ContentView: View, AuthenticationChallengeHandler {
+struct ContentView: View, ArcGISAuthenticationChallengeHandler {
     private struct LoadedMap {
         let mapView: MapView
         let ilds: IndoorsLocationDataSource
@@ -141,11 +141,11 @@ struct ContentView: View, AuthenticationChallengeHandler {
                 startStopTitle = "failed"
             }
         }.onAppear {
-            ArcGISEnvironment.authenticationChallengeHandler = self
+            ArcGISEnvironment.authenticationManager.arcGISAuthenticationChallengeHandler = self
             CLLocationManager().requestWhenInUseAuthorization()
         }
         .onDisappear {
-            ArcGISEnvironment.authenticationChallengeHandler = nil
+            ArcGISEnvironment.authenticationManager.arcGISAuthenticationChallengeHandler = nil
         }
     }
     
@@ -204,23 +204,47 @@ struct ContentView: View, AuthenticationChallengeHandler {
     
     private func errorString(for error: Error) -> String {
         switch error {
-        case let authenticationError as ArcGISAuthenticationChallenge.Error:
+        case let authenticationError as ArcGISAuthenticationError:
             switch authenticationError {
-            case .userCancelled(_):
-                return "User cancelled error"
             case .credentialCannotBeShared:
-                return "Provided credential cannot be shared"
-            @unknown default:
-                return "Generic error"
+                return "Credential cannot be shared"
+                
+            case .forbidden:
+                return "Access forbidden"
+                
+            case .invalidAPIKey:
+                return "Invalid API key"
+                
+            case .invalidCredentials:
+                return "Invalid credentials"
+                
+            case .invalidToken:
+                return "Invalid token"
+                
+            case .oAuthAuthorizationFailure(type: let type, details: let description):
+                return "OAuthe authorization failed. Type: \(type), Description: \(description)"
+                
+            case .sslRequired:
+                return "SSL required"
+                
+            case .tokenExpired:
+                return "Token expired"
+                
+            case .tokenRequired:
+                return "Token required"
+                
+            case .unableToDetermineTokenURL:
+                return "Unabler to determin token URL"
             }
+            
         default:
-            return error.localizedDescription
+            return "Unknown error"
         }
     }
     
     func handleArcGISAuthenticationChallenge(_ challenge: ArcGISAuthenticationChallenge) async throws -> ArcGISAuthenticationChallenge.Disposition {
-        return .useCredential(
-            try await .token(challenge: challenge, username: "conf_user_IPS", password: "conf_user_IPS1")
+        return .continueWithCredential(
+            try await TokenCredential.credential(for: challenge, username: "conf_user_IPS", password: "conf_user_IPS1")
         )
     }
     

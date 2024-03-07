@@ -12,10 +12,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.arcgismaps.ArcGISEnvironment
 import com.arcgismaps.httpcore.authentication.ArcGISAuthenticationChallenge
 import com.arcgismaps.httpcore.authentication.ArcGISAuthenticationChallengeHandler
@@ -76,17 +74,13 @@ class MainFragment : Fragment() {
         lifecycle.addObserver(fragmentMainBinding.mapView)
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.drop(1).collect { uiState ->
-                    handleUiStateUpdate(uiState)
-                }
+            viewModel.uiState.drop(1).collect { uiState ->
+                handleUiStateUpdate(uiState)
             }
         }
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.locationDetailsState.drop(1).collect { data ->
-                    data?.let { updateLocationDetailsView(it) }
-                }
+            viewModel.locationDetailsState.drop(1).collect { data ->
+                data?.let { updateLocationDetailsView(it) }
             }
         }
 

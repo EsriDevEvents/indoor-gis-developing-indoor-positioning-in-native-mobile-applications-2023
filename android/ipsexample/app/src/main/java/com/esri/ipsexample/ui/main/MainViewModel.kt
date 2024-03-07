@@ -92,6 +92,7 @@ class MainViewModel : ViewModel() {
                         indoorsLocationDataSource = setupIndoorsLocationDataSource(
                             positioningTable,
                             getServiceFeatureTable("Pathways") as? ArcGISFeatureTable,
+                            getServiceFeatureTable("Levels") as? ArcGISFeatureTable,
                             positioningId
                         )
                         _uiState.update { currentUiState ->
@@ -117,14 +118,18 @@ class MainViewModel : ViewModel() {
     private fun setupIndoorsLocationDataSource(
         positioningTable: FeatureTable,
         pathwaysFeatureTable: ArcGISFeatureTable?,
+        levelsFeatureTable: ArcGISFeatureTable?,
         positioningId: Guid?
     ): IndoorsLocationDataSource {
         val indoorsLocationDataSource = IndoorsLocationDataSource(
             positioningTable = positioningTable,
             pathwaysTable = pathwaysFeatureTable,
+            levelsTable = levelsFeatureTable,
             positioningId = positioningId
         )
-        indoorsLocationDataSource.locationChanged.onEach { updateUI(it) }.launchIn(viewModelScope)
+        indoorsLocationDataSource.locationChanged.onEach {
+            updateUI(it)
+        }.launchIn(viewModelScope)
 
         indoorsLocationDataSource.status.drop(1).onEach { status ->
             when (status) {

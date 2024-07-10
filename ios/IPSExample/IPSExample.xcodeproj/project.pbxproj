@@ -608,7 +608,7 @@
 			repositoryURL = "https://github.com/esri/arcgis-maps-sdk-swift";
 			requirement = {
 				kind = exactVersion;
-				version = 200.3.0;
+				version = 200.4.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

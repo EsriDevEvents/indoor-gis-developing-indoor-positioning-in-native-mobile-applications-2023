@@ -98,18 +98,12 @@ struct ContentView: View, ArcGISAuthenticationChallengeHandler {
                 let map = Map(item: portalItem)
                 /// Load specified map
                 try await map.load()
-
-                /// Load and select 'IPS Positioning' table from loaded map
-                try await ArcGISUtils.load(loadables: map.tables)
-                guard let positioningTable = map.tables.first(where: {$0.tableName == "IPS_Positioning"}) else {
-                    throw SetupError.positioningTableNotFound
+                
+                guard let indoorPositioningDefinition = map.indoorPositioningDefinition else {
+                    mapLoadResult = .failure(SetupError.indoorPositioningDefinitionNotFound)
+                    return
                 }
-                
-                /// Select Pathways feature layer from operational layers inside the map
-                let pathwaysTable = getFeatureLayer(name: "Pathways", in: map)!.featureTable as! ArcGISFeatureTable
-                
-                /// Initialize IndoorsLocationDataSource with the positioning and the pathways table
-                let ilds = IndoorsLocationDataSource(positioningTable: positioningTable, pathwaysTable: pathwaysTable)
+                let ilds = IndoorsLocationDataSource(definition: indoorPositioningDefinition)
                 
                 /// Assign ILDS to the map's location display
                 let locationDisplay = LocationDisplay(dataSource: ilds)
@@ -191,24 +185,12 @@ struct ContentView: View, ArcGISAuthenticationChallengeHandler {
     }
     
     private enum SetupError: LocalizedError {
-        case failedToLoadIPS
-        case noIPSDataFound
-        case mapDoesNotSupportIPS
-        case failedToLoadFeatureTables
-        case positioningTableNotFound
+        case indoorPositioningDefinitionNotFound
 
         var errorDescription: String? {
             switch self {
-            case .failedToLoadIPS:
-                return NSLocalizedString("Failed to load IPS", comment: "")
-            case .noIPSDataFound:
-                return NSLocalizedString("No IPS data found", comment: "")
-            case .mapDoesNotSupportIPS:
-                return NSLocalizedString("Map does not support IPS", comment: "")
-            case .failedToLoadFeatureTables:
-                return NSLocalizedString("Failed to load feature tables", comment: "")
-            case .positioningTableNotFound:
-                return NSLocalizedString("Positioning table not found", comment: "")
+            case .indoorPositioningDefinitionNotFound:
+                return NSLocalizedString("PositioningDefinition not found", comment: "")
             }
         }
     }
@@ -246,6 +228,9 @@ struct ContentView: View, ArcGISAuthenticationChallengeHandler {
                 
             case .unableToDetermineTokenURL:
                 return "Unabler to determin token URL"
+                
+            @unknown default:
+                return "Unknown error"
             }
             
         default:
